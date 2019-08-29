@@ -41,24 +41,22 @@ class LinearRegressor:
         self.__y_train = y_train
         self.__epochs = epochs
         self.__output_log = []
+        self.__w = [0.3]*(X_train.shape[1]+1)
+        self.__learning_rate = 0.0003
+        self.__cost = 0.0
         self.__train()
-        self.__w = []
-        for i in range(0,X_train.shape[1]+1):
-            self.__w.append(0.3)
-        self.__learning_rate = 0.3
-        self.__cost = 0
     
     def __calculateCost(self):
         """Method to calculate the current objective function value"""
         
-        self.__cost = 0
+        self.__cost = 0.0
         for i in range(0,len(self.__X_train)):
             current_cost = self.__w[0]
             for j in range(1,len(self.__w)):
                 current_cost = current_cost + (self.__w[j])*(self.__X_train[i][j-1])
             current_cost = current_cost - self.__y_train[i]
             current_cost = (current_cost)*(current_cost)
-            self.__cost = self.__cost + current_cost
+            self.__cost = (self.__cost) + current_cost
         self.__cost = 0.5*(self.__cost)
         return self.__cost
 
@@ -87,6 +85,24 @@ class LinearRegressor:
             current_values.append(new_cost)
             current_values.append(self.__w)
             self.__output_log.append(current_values)
+            print('Epoch: ' + str(t) + ' Cost: ' + str(new_cost))
+    
+    def predict(self, X_test):
+        """Method to predict the values"""
+        
+        predictions = []
+        for x in X_test:
+            pred = self.__w[0]
+            for j in range(0,len(x)):
+                pred = pred + (self.__w[j+1] * x[j])
+            predictions.append(pred)
+        return predictions
+    
+    def getLog(self):
+        return self.__output_log
+    
+regressor = LinearRegressor(X_train, y_train, 100)
+predictions = regressor.predict(X_test)
     
     
     
