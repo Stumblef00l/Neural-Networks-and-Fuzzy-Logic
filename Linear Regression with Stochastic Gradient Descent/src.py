@@ -32,7 +32,7 @@ X_test = normalizer.transform(X_test)
 
 #Creating a Linear Regressor class
 
-class BatchLinearRegressor:
+class StochasticLinearRegressor:
     """Linear Regression class that takes
     the training set as input """
 
@@ -42,7 +42,7 @@ class BatchLinearRegressor:
         self.__epochs = epochs
         self.__output_log = []
         self.__w = [0.3]*(X_train.shape[1]+1)
-        self.__learning_rate = 0.0001
+        self.__learning_rate = 0.003
         self.__cost = 0.0
         self.__train()
 
@@ -72,17 +72,14 @@ class BatchLinearRegressor:
         self.__output_log.append(current_values)
         for t in range(1,self.__epochs+1):
             current_values = []
-            sum_of_values = [0]*(len(self.__w))
             for i in range(0,len(self.__X_train)):
                 current_cost = self.__w[0]
                 for j in range(1,len(self.__w)):
                     current_cost = current_cost + (self.__w[j])*(self.__X_train[i][j-1])
                 current_cost = current_cost - self.__y_train[i]
-                sum_of_values[0] = sum_of_values[0] + current_cost
+                self.__w[0] = self.__w[0] - (current_cost * self.__learning_rate)
                 for j in range(1,len(self.__w)):
-                    sum_of_values[j] = sum_of_values[j] + (current_cost * self.__X_train[i][j-1])
-            for j in range(0,len(self.__w)):
-                self.__w[j] = self.__w[j] - (sum_of_values[j] * self.__learning_rate)
+                    self.__w[j] = self.__w[j] - (current_cost * self.__learning_rate * self.__X_train[i][j-1])
             new_cost = self.__calculateCost()
             current_values.append(new_cost)
             current_values.append(self.__w)
@@ -103,5 +100,5 @@ class BatchLinearRegressor:
     def getLog(self):
         return self.__output_log
 
-regressor = BatchLinearRegressor(X_train, y_train, 100)
+regressor = StochasticLinearRegressor(X_train, y_train, 100)
 predictions = regressor.predict(X_test)
