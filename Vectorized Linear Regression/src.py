@@ -44,7 +44,7 @@ X_test = normalizer.transform(X_test)
 for record in X_train:
     record[-1] = 1.0
 
-for i in X_test:
+for record in X_test:
     record[-1] = 1.0
 
 #Creating a class for Vectorized Regression
